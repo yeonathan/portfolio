@@ -2,63 +2,56 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Job Analyzer</title>
+  <title>Analyseur de mots-clés (Offline)</title>
   <style>
     body { font-family: sans-serif; background: #f4f7f9; color: #333; max-width: 800px; margin: auto; padding: 20px; }
     h1 { color: #004d4d; }
-    textarea { width: 100%; height: 200px; margin-top: 10px; }
+    textarea { width: 100%; height: 180px; margin-top: 10px; }
     button { background: #00796b; color: white; border: none; padding: 10px 20px; margin-top: 10px; cursor: pointer; }
     .output { background: white; padding: 15px; border-radius: 6px; margin-top: 20px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    .label { font-weight: bold; margin-top: 10px; color: #00796b; }
+    .label { font-weight: bold; color: #00796b; margin-bottom: 10px; }
   </style>
 </head>
 <body>
 
-<h1>Job Analyzer</h1>
-<p>Collez ici une offre d’emploi (depuis LinkedIn, Indeed, etc.), puis cliquez sur Analyser pour extraire les informations clés :</p>
+<h1>Extracteur de mots-clés</h1>
+<p>Collez un texte de profil, de CV ou de job description. Les mots-clés les plus fréquents s'afficheront :</p>
 
-<textarea id="jobInput" placeholder="Ex: Nous recherchons un Data Scientist expérimenté maîtrisant Python, SQL et Azure..."></textarea>
+<textarea id="textInput" placeholder="Exemple : Data Scientist avec Python, SQL, Machine Learning, Deep Learning..."></textarea>
 <br>
-<button onclick="analyzeJob()">Analyser</button>
+<button onclick="extractKeywords()">Analyser</button>
 
 <div class="output" id="result">
-  <div class="label">Intitulé :</div>
-  <div id="title"></div>
-
-  <div class="label">Compétences :</div>
-  <div id="skills"></div>
-
-  <div class="label">Localisation :</div>
-  <div id="location"></div>
+  <div class="label">Mots-clés détectés :</div>
+  <div id="keywords">En attente...</div>
 </div>
 
 <script>
-function analyzeJob() {
-  const input = document.getElementById('jobInput').value.toLowerCase();
-  document.getElementById('title').innerText = guessTitle(input);
-  document.getElementById('skills').innerText = guessSkills(input).join(', ');
-  document.getElementById('location').innerText = guessLocation(input);
-}
+function extractKeywords() {
+  const text = document.getElementById("textInput").value.toLowerCase();
 
-function guessTitle(text) {
-  const titles = ['data scientist', 'data analyst', 'machine learning engineer', 'data engineer', 'ai engineer'];
-  for (let title of titles) {
-    if (text.includes(title)) return title.charAt(0).toUpperCase() + title.slice(1);
-  }
-  return "Non détecté";
-}
+  const stopWords = [
+    "le", "la", "les", "un", "une", "des", "de", "du", "dans", "en", "et", "avec", "par", "pour", "sur", "à", "au",
+    "est", "ce", "qui", "que", "nous", "vous", "ils", "elles", "il", "elle", "ne", "pas", "plus", "comme"
+  ];
 
-function guessSkills(text) {
-  const skills = ['python', 'sql', 'azure', 'aws', 'spark', 'tensorflow', 'power bi', 'pandas', 'git', 'docker'];
-  return skills.filter(skill => text.includes(skill));
-}
+  const words = text.split(/[^a-zA-Zéèêàçù0-9\+]/).filter(word =>
+    word.length > 2 && !stopWords.includes(word)
+  );
 
-function guessLocation(text) {
-  const cities = ['paris', 'lyon', 'marseille', 'toulouse', 'lille', 'remote'];
-  for (let city of cities) {
-    if (text.includes(city)) return city.charAt(0).toUpperCase() + city.slice(1);
-  }
-  return "Non spécifiée";
+  const counts = {};
+  words.forEach(word => {
+    counts[word] = (counts[word] || 0) + 1;
+  });
+
+  const sorted = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20)
+    .map(([word]) => word);
+
+  document.getElementById("keywords").innerText = sorted.length > 0
+    ? sorted.join(", ")
+    : "Aucun mot-clé détecté.";
 }
 </script>
 
