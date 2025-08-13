@@ -23,5 +23,5 @@ Ce projet montre comment une interface statique peut simuler une analyse intelli
 - Regex / NLP de base (simulé)
 
 ## Live Demo
-Voici le lien : 👉 [https://yeonathan.github.io/portfolio/]
+Voici le lien : 👉 [https://yeonathan.github.io/portfolio_Job_analyzer_2025/]
 
