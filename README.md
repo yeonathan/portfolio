@@ -21,3 +21,7 @@ Ce projet montre comment une interface statique peut simuler une analyse intelli
 - HTML / CSS / JS
 - DOM manipulation
 - Regex / NLP de base (simulé)
+
+## Live Demo
+Voici le lien : 👉 [https://yeonathan.github.io/portfolio/]
+
